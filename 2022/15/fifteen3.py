@@ -23,19 +23,19 @@ for coords in i_n:
     if inside_x and inside_y:
         useful.append(((x, y), delta))
     ## y value checking
-    elif y < lower_bound: # checking if lower than lower boundary
-        if y + delta >= lower_bound: # checking if delta crosses boundary
-            useful.append(((x, y), delta)) ## storing coords and delta info for later
-    elif y > upper_bound : # checking if higher than higher boundary
-        if y - delta <= upper_bound: # checking if delta crosses boundary
-            useful.append(((x, y), delta)) # ..
-    ## x value checking
-    elif x < lower_bound: # checking if lower than lower boundary
-        if x + delta >= lower_bound: # checking if delta crosses boundary
-            useful.append(((x, y), delta)) ## storing coords and delta for later
-    elif x > upper_bound : # checking if higher than higher boundary
-        if x - delta <= upper_bound: # checking if delta crosses boundary
-            useful.append(((x, y), delta)) # ..
+    # elif y < lower_bound: # checking if lower than lower boundary
+    #     if y + delta >= lower_bound: # checking if delta crosses boundary
+    #         useful.append(((x, y), delta)) ## storing coords and delta info for later
+    # elif y > upper_bound : # checking if higher than higher boundary
+    #     if y - delta <= upper_bound: # checking if delta crosses boundary
+    #         useful.append(((x, y), delta)) # ..
+    # ## x value checking
+    # elif x < lower_bound: # checking if lower than lower boundary
+    #     if x + delta >= lower_bound: # checking if delta crosses boundary
+    #         useful.append(((x, y), delta)) ## storing coords and delta for later
+    # elif x > upper_bound : # checking if higher than higher boundary
+    #     if x - delta <= upper_bound: # checking if delta crosses boundary
+    #         useful.append(((x, y), delta)) # ..
 
 # print(useful)
 useful = sorted(useful, key=lambda x: x[0][0])

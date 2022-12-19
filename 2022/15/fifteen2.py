@@ -1,4 +1,4 @@
-# decided to open a new file, because I'm about to scramble this up. Okay so it's been about 2 hours since that last comment, and I've realized I think I need to rewrite this code from scratch for the second part, because it just doesn't work like this.
+# decided to open a new file, because I'm about to scramble this up. Okay so it's been about 2 hours since that last comment, and I've realized I think I need to rewrite this code from scratch for the second part, because it just doesn't work like this. IT still doesn't work, so we're trying something else in a new file.
 
 from re import findall
 from collections import defaultdict
