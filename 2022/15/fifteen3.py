@@ -43,12 +43,8 @@ print(useful)
 
 def merge_interval(coverage, coords, old):
     new = [coords[0] - coverage, coords[0] + coverage]
-    if old[1] + 1 >= new[0]:
-        return [old[0] if old[0] < new[0] else new[0], new[1] if new[1] > old[1] else old[1]]
-    else:
-        return old
-        print(old, new)
-        return (new[0] + old[1])// 2
+    if old[1] + 1 >= new[0]: return [old[0] if old[0] < new[0] else new[0], new[1] if new[1] > old[1] else old[1]]
+    else: return old
 
 def check_lines(useful):
     for space_y_line in range(upper_bound + 1):
