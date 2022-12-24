@@ -1,6 +1,9 @@
 from re import findall
+from dataclasses import dataclass
+from typing import List
 
-i_n = list(list(int(i) if ord(i[0]) >= 48 and ord(i[0]) <= 57 else i for i in findall(r"-?\d+|[A-Z]{2}", l)) for l in open('2022/16/input.txt').read().splitlines())
+
+i_n = list(list(int(i) if ord(i[0]) >= 48 and ord(i[0]) <= 57 else i for i in findall(r"-?\d+|[A-Z]{2}", l)) for l in open('input.txt').read().splitlines())
 
 
 
@@ -8,24 +11,19 @@ i_n = list(list(int(i) if ord(i[0]) >= 48 and ord(i[0]) <= 57 else i for i in fi
 # print(i_n[0][1] + 2)
 # print(i_n)
 
+@dataclass
 class Neighbor:
-    
-    def __init__(self, distance, name):
-        self.name = name
-        self.distance = distance
+    name: str
+    distance: int 
+    #def __init__(self, distance, name):
+        #self.name = name
+        #self.distance = distance
 
+@dataclass
 class Valve:
-     
-    def __init__(self, name, neighbors, flowrate):
-        self.name = name
-        self.neighbors = neighbors
-        self.flow_rate = flowrate
-
-    def __str__(self):
-        return f"{self.name} ({self.flow_rate})"
-    
-    def __repr__(self):
-        return self.__str__()
+    name: str
+    neighbors: List[Neighbor] 
+    flow_rate: int
      
 
 def get_neighbors(input, valve, valves, count, visited):
