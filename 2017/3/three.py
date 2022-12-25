@@ -20,11 +20,15 @@ def part_one(number):
     # return steps
 
 def part_two(number):
-    matrix = []
+    matrix = [[0 for _ in range(math.ceil(math.sqrt(number)) + 1)] for _ in range(math.ceil(math.sqrt(number)) + 1)]
+
+    # while True:
+
 
         
 
 
 
 
-print(part_one(number))
+# print(part_one(number))
+print(part_two(number))

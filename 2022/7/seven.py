@@ -42,7 +42,7 @@
 
 # total = 0
 
-# ## add shit up per folder
+# ## add stuff up per folder
 # for folder in f.keys():
 #     for file in files.keys():
 #         if folder in files[file]:
