@@ -20,9 +20,18 @@ def part_one(number):
     # return steps
 
 def part_two(number):
+    transforms = [(-1, -1), (1, 1), (-1, 1), (1, -1), (1, 0), (-1, 0), (0, 1), (0, -1)]
     matrix = [[0 for _ in range(math.ceil(math.sqrt(number)) + 1)] for _ in range(math.ceil(math.sqrt(number)) + 1)]
+    pos = (len(matrix)//2, (len(matrix)//2))
+    matrix[pos[1]][pos[0]] = 1
+    
 
-    # while True:
+    while matrix[pos[1]][pos[0]] <= number: ## I have to traverse the array in a circular pattern. I think I can do it based on whats around the number
+        for transform in transforms:
+            
+
+
+
 
 
         
