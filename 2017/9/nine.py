@@ -8,7 +8,7 @@ def both_parts(line):
             elif line[index] == '}': current_value -= 1
             elif line[index] == '<': trash = True
             elif line[index] == '!': index += 1
-        elif line[index] == '>': trash = False
+        elif line[index] == '>': trash = Falses
         elif line[index] == '!': index += 1
         else: non_trash_count += 1
         index += 1
