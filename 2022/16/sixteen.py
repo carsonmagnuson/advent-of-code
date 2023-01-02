@@ -2,6 +2,7 @@ from re import findall
 from dataclasses import dataclass
 from typing import List
 from collections import deque
+from copy import deepcopy
 
 
 i_n = list(list(int(i) if ord(i[0]) >= 48 and ord(i[0]) <= 57 else i for i in findall(r"-?\d+|[A-Z]{2}", l)) for l in open('2022/16/input.txt').read().splitlines())
@@ -84,12 +85,36 @@ def determine_options(current_valve, valid_valves, minutes_left, visited):
     ## I have two potential approaches - depth or breadth. My paper solution went two deep each time, but idk if that's enough. Lets try it though.
  ## maybe we allow for a depth setting and a breadth setting
 
+def meme_wide_with_recursion(breadth_choice, minutes_left, visited, cumulative_pressure_released, valid_valves, time_taken, option_chosen, pressure_rate):
+    minutes_left -= time_taken
+    visited.add(option_chosen)
 
+    if minutes_left < time_taken:
+        cumulative_pressure_released += minutes_left * pressure_rate
+        return cumulative_pressure_released
+    else:
+        cumulative_pressure_released += time_taken * pressure_rate
+    
+    pressure_rate += valid_valves[option_chosen].flow_rate
+    
+    options = determine_options(option_chosen, valid_valves, minutes_left, visited)
+
+    if len(options) == 0:
+        return  cumulative_pressure_released + (minutes_left * pressure_rate)
+   
+    maximum = 0
+    for count in range(breadth_choice if breadth_choice < len(options) else len(options)):
+        maximum = max(meme_wide_with_recursion(breadth_choice, minutes_left, deepcopy(visited), cumulative_pressure_released, valid_valves, (options[count][1][1] + 1), options[count][0], pressure_rate), maximum)
+    
+
+    return maximum
 
 un_weighted = convert_to_map(i_n)
 valid_valves = convert_to_weighted(i_n, un_weighted)
-for valve in valid_valves.keys():
-    print(valid_valves[valve])
+# for valve in valid_valves.keys():
+#     print(valid_valves[valve])
+
+print(meme_wide_with_recursion(20, 30, set(['AA']), 0, valid_valves, 0, 'AA', 0))
 
 minutes_left = 30
 visited = set(['AA'])
@@ -97,19 +122,4 @@ current = 'AA'
 cumulative_pressure_released = 0
 pressure_rate = 0
 
-while visited != set(valid_valves.keys()):
-    options = determine_options(current, valid_valves, minutes_left, visited)
-    time_taken = options[0][1][1] + 1  # the opening of the valve is + 1
-    option_chosen = options[0][0]
 
-    minutes_left -= time_taken
-    visited.add(option_chosen)
-    current = option_chosen
-    if minutes_left < time_taken:
-        cumulative_pressure_released += minutes_left * pressure_rate
-    else:
-        cumulative_pressure_released += time_taken * pressure_rate
-    pressure_rate += valid_valves[option_chosen].flow_rate
-
-print(cumulative_pressure_released)
-print(minutes_left)
