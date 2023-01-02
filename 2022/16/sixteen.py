@@ -17,6 +17,13 @@ class Valve:
     neighbors: List[Neighbor] 
     flow_rate: int
      
+def convert_to_map(input):
+    connections = {}
+    for valve in input:
+        connections[valve[0]] = valve[2:len(valve)]
+    return connections
+
+
 def get_valid_neighbors(visited, current_valve, all_valves, valid_valves, count):
     visited.add(current_valve)
     valid_neighbors = []
@@ -27,13 +34,6 @@ def get_valid_neighbors(visited, current_valve, all_valves, valid_valves, count)
             else:
                 valid_neighbors.extend(get_valid_neighbors(visited, neighbor, all_valves, valid_valves, count + 1))
     return valid_neighbors
-
-def convert_to_map(input):
-    connections = {}
-    for valve in input:
-        connections[valve[0]] = valve[2:len(valve)]
-    return connections
-
 
 def convert_to_weighted(input, all_valves):
     valid_valves = {}
@@ -49,22 +49,17 @@ def convert_to_weighted(input, all_valves):
 def dijkstras(current_valve, target_valve, valid_valves):
     queue_neighbor_list = {current_valve : Neighbor(current_valve, 0)}
     queue = deque([current_valve])
-
-    # print(queue.popleft())
     visited = set()
     while queue:
         for index in range(len(queue)):
             current = queue.popleft()
             current_neighbor = queue_neighbor_list.pop(current)
             visited.add(current)
-            # when we pop a node, we add to visited. That way we can still reconfigure neigbors based on new paths, but once we're on the node it no longer can be reconfigured
 
-            # check if dest.
             if current == target_valve:
                 return current_neighbor.distance
 
             add_to_queue = list(Neighbor(neighbor.name, neighbor.distance + current_neighbor.distance) for neighbor in valid_valves[current].neighbors)
-            # queue.extend(Neighbor(neighbor.name, neighbor.distance + current.distance) for neighbor in valid_valves[current.name].neighbors) # need to modify this so that we can add the current valves length to the length of the item in queue -> to get a valid priority queue - done.
             for neighbor in add_to_queue:
                 if queue_neighbor_list.get(neighbor.name) == None and neighbor.name not in visited:
                     queue_neighbor_list[neighbor.name] = neighbor
@@ -73,17 +68,22 @@ def dijkstras(current_valve, target_valve, valid_valves):
                     queue_neighbor_list[neighbor.name] = neighbor if neighbor.distance < queue_neighbor_list[neighbor.name].distance else queue_neighbor_list[neighbor.name]
             queue = deque(sorted(queue, key=lambda neighbor: queue_neighbor_list[neighbor].distance))
 
-            ## need to remove possible duplicates, keeping shortest
-            ## then check if destination.
-            ## we also need a visited I think, to store where we came from so we don't go b ack.
-
-def calculate_estimate(current_valve, valid_valves):
+def calculate_estimate(current_valve, valid_valves, time_left, visited):
     estimated_values = {}
     for valve in valid_valves.keys():
-        if valve != current_valve:
+        if valve != current_valve and valve not in visited:
             distance = dijkstras(current_valve, valve, valid_valves)
-            estimated_values[valve] = (30 - (distance + 1) ) * valid_valves[valve].flow_rate
+            estimated_values[valve] = ((time_left - (distance + 1) ) * valid_valves[valve].flow_rate, distance) ## the magic
     return estimated_values
+
+def determine_options(current_valve, valid_valves, minutes_left, visited):
+    magic_numbers = calculate_estimate(current_valve, valid_valves, minutes_left, visited)
+    ordered_options = sorted(list([key, magic_numbers[key]] for key in magic_numbers), key=lambda valve: valve[1][0], reverse=True)
+    return ordered_options
+
+    ## I have two potential approaches - depth or breadth. My paper solution went two deep each time, but idk if that's enough. Lets try it though.
+ ## maybe we allow for a depth setting and a breadth setting
+
 
 
 un_weighted = convert_to_map(i_n)
@@ -91,7 +91,25 @@ valid_valves = convert_to_weighted(i_n, un_weighted)
 for valve in valid_valves.keys():
     print(valid_valves[valve])
 
-# print(valid_valves['AA'].neighbors)
-print(dijkstras('AA', 'HH', valid_valves))
-print(calculate_estimate('AA', valid_valves))
+minutes_left = 30
+visited = set(['AA'])
+current = 'AA'
+cumulative_pressure_released = 0
+pressure_rate = 0
 
+while visited != set(valid_valves.keys()):
+    options = determine_options(current, valid_valves, minutes_left, visited)
+    time_taken = options[0][1][1] + 1  # the opening of the valve is + 1
+    option_chosen = options[0][0]
+
+    minutes_left -= time_taken
+    visited.add(option_chosen)
+    current = option_chosen
+    if minutes_left < time_taken:
+        cumulative_pressure_released += minutes_left * pressure_rate
+    else:
+        cumulative_pressure_released += time_taken * pressure_rate
+    pressure_rate += valid_valves[option_chosen].flow_rate
+
+print(cumulative_pressure_released)
+print(minutes_left)
