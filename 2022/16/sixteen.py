@@ -82,9 +82,6 @@ def determine_options(current_valve, valid_valves, minutes_left, visited):
     ordered_options = sorted(list([key, magic_numbers[key]] for key in magic_numbers), key=lambda valve: valve[1][0], reverse=True)
     return ordered_options
 
-    ## I have two potential approaches - depth or breadth. My paper solution went two deep each time, but idk if that's enough. Lets try it though.
- ## maybe we allow for a depth setting and a breadth setting
-
 def meme_wide_with_recursion(breadth_choice, minutes_left, visited, cumulative_pressure_released, valid_valves, time_taken, option_chosen, pressure_rate):
     minutes_left -= time_taken
     visited.add(option_chosen)
@@ -106,20 +103,22 @@ def meme_wide_with_recursion(breadth_choice, minutes_left, visited, cumulative_p
     for count in range(breadth_choice if breadth_choice < len(options) else len(options)):
         maximum = max(meme_wide_with_recursion(breadth_choice, minutes_left, deepcopy(visited), cumulative_pressure_released, valid_valves, (options[count][1][1] + 1), options[count][0], pressure_rate), maximum)
     
-
     return maximum
+
+def meme_deep(valid_valves):
+    options = determine_options('AA', valid_valves, 30, set())
+    # print(options)
+    option_one = meme_wide_with_recursion(1, 30, set(), 0, valid_valves, 0, 'AA', 0)
+    option_two = meme_wide_with_recursion(1, 30 - options[1][1][1] + 1, set(['AA']), 0, valid_valves, options[1][1][1] + 1, options[1][0], 0)
+    print(option_one)
+    print(option_two)
+    return options
 
 un_weighted = convert_to_map(i_n)
 valid_valves = convert_to_weighted(i_n, un_weighted)
 # for valve in valid_valves.keys():
 #     print(valid_valves[valve])
 
-print(meme_wide_with_recursion(20, 30, set(['AA']), 0, valid_valves, 0, 'AA', 0))
-
-minutes_left = 30
-visited = set(['AA'])
-current = 'AA'
-cumulative_pressure_released = 0
-pressure_rate = 0
+print(meme_deep(valid_valves))
 
 
