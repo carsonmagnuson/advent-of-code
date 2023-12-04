@@ -1,31 +1,18 @@
 from math import pow
-input = open('input.txt', 'r').read().splitlines()
+input = open('test.txt', 'r').read().splitlines()
 
-def part_a(lines):
-    scores = []
-    for line in lines:
-        numbers = line[line.find(':') + 1:]
-        win, mine = numbers.split('|')
-        win = set(list(map(int, win.split())))
-        mine = list(map(int, mine.split())) 
-        score = 0
-        for num in mine:
-            if num in win:
-                score += 1
-        scores.append(score)
+def sol(lines):
+    scores = [len(set(map(int, win.split())).intersection(list(map(int, mine.split())))) for win, mine in (numbers.split('|') for numbers in (line[line.find(':')+1:] for line in lines))]
 
+    print('part A:')
     print(sum(map(lambda x: 1*pow(2,x-1) if x else 0, scores)))
 
-    total = 0
-    for x in range(len(scores)):
-        total += 1 + recur(x, scores)
-    print(total)
+    print('part B:')
+    print(sum(1 + recur(x, scores) for x in range(len(scores))))
+
 
 def recur(index, scores):
-    cumulative = 0
-    for x in range(1, scores[index]+1):
-        cumulative += recur(index+x, scores)
-    return scores[index] + cumulative 
+    return scores[index] + sum(recur(index+x, scores) for x in range(1, scores[index]+1))
 
 
-part_a(input)
+sol(input)
