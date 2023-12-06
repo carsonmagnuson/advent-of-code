@@ -27,7 +27,5 @@ def part_b(i):
     print(total)
     
 
-    
-    
-
+part_a(i)
 part_b(i)
