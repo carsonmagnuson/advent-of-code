@@ -10,7 +10,6 @@ for line in i:
 
 def ranker(card):
     freq = {}
-    big = 0
     heavy = 'J'
     for char in card:
         freq[char] = freq.get(char, 0) + 1
@@ -19,46 +18,26 @@ def ranker(card):
     if freq.get('J') and freq['J'] != 5:
         jokes = freq['J']
         del freq['J']
-        if len(freq.keys()) == 5: 
-            freq[heavy] += jokes
-        else:
-            freq[max(freq.keys(), key=lambda x: freq[x])] += jokes
+        freq[heavy if len(freq.keys()) == 5 else max(freq.keys(), key=lambda x: freq[x])] += jokes
 
 
     big = max(freq.values())
-    if big >= 4:
-        if big > 5:
-            print('oops')
-            print(big)
-            print(freq)
-        return big + 2
-    if big == 3:
-        return 5 if len(freq.keys()) == 2 else 4
-    if big == 2:
-        return 3 if len(freq.keys()) == 3 else 2
+    variance = len(freq.keys())
+
+    if big >= 4: return big + 2
+    if big == 3: return 5 if variance == 2 else 4
+    if big == 2: return 3 if variance == 3 else 2
     return 1
 
 def compare(A, B):
-    a = A[0]
-    b = B[0]
-    a_rank = ranker(a)
-    b_rank = ranker(b)
-    if a_rank > b_rank:
-        return 1
-    if a_rank < b_rank:
-        return -1
-
-    return weigh_deez(a, b)
+    diff = ranker(A[0]) - ranker(B[0])
+    if diff != 0: return (diff) / abs(diff)
+    return weigh_deez(A[0], B[0])
 
 def weigh_deez(a, b):
     for index in range(5):
-        a_weight = weight[a[index]]
-        b_weight = weight[b[index]]
-        if a_weight > b_weight:
-            return 1
-        if a_weight < b_weight:
-            return -1
-    return 0
+        diff = weight[a[index]] - weight[b[index]]
+        if diff != 0: return (diff) / abs(diff)
             
 
 ranked = sorted(hands, key=cmp_to_key(compare))
