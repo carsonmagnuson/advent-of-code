@@ -1,5 +1,6 @@
 from functools import cmp_to_key
-i = open('input.txt', 'r').read().splitlines()
+import re
+i = open('test.txt', 'r').read().splitlines()
 
 hands = []
 weight = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 1, 'Q': 12, 'K': 13, 'A': 14}
@@ -32,6 +33,10 @@ def compare(A, B):
     return (diff) / abs(diff) if diff != 0 else weigh_deez(A[0], B[0])
 
 def weigh_deez(a, b):
+    comparisons = ''.join(str(weight[card_a] - weight[card_b]) for card_a, card_b in zip(a,b))
+    print(comparisons)
+    kicker = re.search(r'-?[1-9]\b', comparisons)
+    print(kicker)
     for index in range(5):
         diff = weight[a[index]] - weight[b[index]]
         if diff != 0: return (diff) / abs(diff)
