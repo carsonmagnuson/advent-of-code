@@ -1,5 +1,6 @@
 from typing import List
 
+mem = {}
 
 def parse(inp: str) -> List[tuple[str, List[int]]]:
     """Parsing function"""
@@ -7,17 +8,22 @@ def parse(inp: str) -> List[tuple[str, List[int]]]:
 
 def perms(perm: str, info: List[int]) -> int:
     """Permutations counting function"""
+    key = (perm, tuple(info))
+    if key in mem:
+        return mem[key]
+
     if perm == "": return 1 if info == [] else 0
     if info == []: return 0 if "#" in perm else 1
 
     count = 0
 
-    if perm[0] in ".?": count += perms(perm[1:], info)
-    
+    if perm[0] in ".?": count += perms(perm[1:], info) 
     if perm[0] in "#?":
         if len(perm) >= info[0] and "." not in perm[:info[0]]: # check perm length is bigger than next set and that set's worth of characters are all not for sure functional
             if info[0] == len(perm) or perm[info[0]] != "#": # check that either length of perm = next set amount or that char after sets last char is functional
                 count += perms(perm[info[0]+1:], info[1:])
+
+    mem[key] = count
 
     return count
 
@@ -32,3 +38,5 @@ def b(inp: str) -> int:
     return sum(perms("?".join([perm]*5), info*5) for perm, info in parsed)
 
 print(a("input.txt"))
+print(b("input.txt"))
+
