@@ -26,4 +26,9 @@ def a(inp: str) -> int:
     parsed = parse(inp)
     return sum(perms(perm, info) for perm, info in parsed)
 
+def b(inp: str) -> int:
+    """Solution to part B"""
+    parsed = parse(inp)
+    return sum(perms("?".join([perm]*5), info*5) for perm, info in parsed)
+
 print(a("input.txt"))

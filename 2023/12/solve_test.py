@@ -22,3 +22,8 @@ def test_a():
     """Test part A solution"""
     output = solve.a("test1.txt")
     assert output == 21
+
+def test_b():
+    """Test part B solution"""
+    output = solve.b("test1.txt")
+    assert output == 525152
