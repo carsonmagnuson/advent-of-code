@@ -30,8 +30,12 @@ def test_distance():
     gal1 = (9, 0)
     gal2 = (9, 4)
     empties = ([3, 7], [2, 5, 8])
-    assert solve.distance(gal1, gal2, empties) == 5
+    assert solve.distance(gal1, gal2, empties, 1) == 5
 
 def test_a():
     """Testing part A solution"""
     assert solve.a("test1.txt") == 374
+
+def test_b():
+    """Testing part B solution"""
+    assert solve.b("test1.txt", 100) == 8410
