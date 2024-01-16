@@ -24,7 +24,6 @@ def perms(perm: str, info: List[int]) -> int:
                 count += perms(perm[info[0]+1:], info[1:])
 
     mem[key] = count
-
     return count
 
 def a(inp: str) -> int:
