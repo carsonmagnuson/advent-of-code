@@ -8,11 +8,13 @@ def rocks(inp: List, rock: str) -> List:
     """Function to find indices of rocks of specified type"""
     return [index for index in range(len(inp)) if inp[index] == rock]
 
-def column(inp: List) -> int:
+def column(inp: List, simple: bool) -> int:
     """Function to aggregate rock weight in a single column"""
+    spheres = rocks(inp, "O")
+    if simple:
+        return sum(len(inp) - sphere for sphere in spheres)
     cubes = [-1]
     cubes.extend(rocks(inp, "#"))
-    spheres = rocks(inp, "O")
     return recur(cubes, spheres, len(inp))
 
 def recur(cubes: List, spheres: List, top: int) -> int:
@@ -48,23 +50,23 @@ def roll(sphere: Tuple, inp: List, move: Tuple) -> Tuple:
 
     return sphere
 
-print(roll((0, 2), [['.', '.', '.']], (0, -1)))
-
-print(roll(
-    (1, 3),[
-        [".", ".", ".", ".", "O", "#", ".", ".", ".", "."],
-        [".", ".", "O", "O", "#", ".", ".", ".", ".", "#"],
-        [".", ".", ".", ".", ".", "#", "#", ".", ".", "."],
-        [".", ".", ".", "#", ".", ".", ".", ".", ".", "."],
-        [".", ".", ".", ".", ".", ".", ".", ".", "#", "."],
-        [".", ".", "#", ".", ".", ".", ".", "#", ".", "#"],
-        [".", ".", ".", ".", ".", "#", ".", ".", ".", "."],
-        [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-        ["#", ".", ".", ".", ".", "#", "#", "#", ".", "."],
-        ["#", ".", ".", ".", ".", "#", ".", ".", ".", "."],
-    ],(0, 1)
-))
-
+# print(roll((0, 2), [['.', '.', '.']], (0, -1)))
+#
+# print(roll(
+#     (1, 3),[
+#         [".", ".", ".", ".", "O", "#", ".", ".", ".", "."],
+#         [".", ".", "O", "O", "#", ".", ".", ".", ".", "#"],
+#         [".", ".", ".", ".", ".", "#", "#", ".", ".", "."],
+#         [".", ".", ".", "#", ".", ".", ".", ".", ".", "."],
+#         [".", ".", ".", ".", ".", ".", ".", ".", "#", "."],
+#         [".", ".", "#", ".", ".", ".", ".", "#", ".", "#"],
+#         [".", ".", ".", ".", ".", "#", ".", ".", ".", "."],
+#         [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+#         ["#", ".", ".", ".", ".", "#", "#", "#", ".", "."],
+#         ["#", ".", ".", ".", ".", "#", ".", ".", ".", "."],
+#     ],(0, 1)
+# ))
+#
 
 def tracking(inp: List) -> int:
     """Return the number of spheres in a matrix"""
@@ -86,29 +88,45 @@ def wipe(inp: List) -> List:
 
 def cycle(inp: List, cycles: int) -> List:
     """Function to put the matix through the dryer"""
-    moves = [(0, 1), (-1, 0), (0, -1), (1, 0)]
-    for _ in range(cycles):
-        pre_check = inp
+    moves = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    r = 0
+    pre_check = {}
+    stored = []
+    for c in range(cycles):
+        key = str(inp)
+        if key not in pre_check:
+            pre_check[key] = c + 1
+            stored.append(inp)
+        else:
+            r = pre_check[key] - 1
+            print(r)
+            modulo = len(pre_check) - r
+            print(modulo)
+            print(len(stored))
+            end = stored[((cycles - r) % modulo) + r]
+            return end
         for move in moves:
             spheres = [(r, c) for r in range(len(inp)) for c in rocks(inp[r], "O")]
             inp = gravitation(spheres, wipe(inp), move)
-        if inp == pre_check:
-            for row in inp:
-                print(row)
-            return inp
-
 
     return inp
 
+
 def a(inp: str) -> int:
     """Solution to part A"""
-    return sum(column(col) for col in zip(*parse(inp)))
+    return sum(column(col, False) for col in zip(*parse(inp)))
 
 def b(inp: str) -> int:
-    """Solution to part B (hopefully :)"""
+    """Solution to part B"""
     parsed = parse(inp)
     washed_n_dried = cycle(parsed, 1000000000)
-    return sum(column(col) for col in zip(*washed_n_dried))
+    # washed_n_dried = cycle(parsed, 3)
+    summed = 0
+    for index, row in enumerate(washed_n_dried):
+        value = len(row) - index
+        summed += len(rocks(row, "O")) * value
+    return summed
+    # return sum(column(col, True) for col in zip(*washed_n_dried))
 
-print(a('0'))
-print(b('1'))
+# print(a('0'))
+print(b('0'))
