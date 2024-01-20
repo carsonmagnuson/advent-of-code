@@ -41,11 +41,52 @@ def trace(cave: List, curr: tuple, move: tuple):
             return
 
 def draw(parsed):
+    """Function to draw cave for testing"""
     for row in range(len(parsed)):
         for col in range(len(parsed)):
             print('#' if (row, col) in energized else '.', end='')
         print('')
 
-trace(parse('1'), (0, -1), (0, 1))
-print(len(energized))
+def a(inp: str) -> int:
+    """Solution for part 1"""
+    trace(parse(inp), (0, -1), (0, 1))
+    print(energized)
+    return len(energized)
 
+def b(inp: str) -> int:
+    """Solution for part 2"""
+    parsed = parse(inp)
+    entries = [
+            ((-1, c), (1, 0)) for c in range(len(parsed[0]))
+            ] + [
+                ((len(parsed), c), (-1, 0)) for c in range(len(parsed[-1]))
+                                                               ] ## add top and bottom row entries
+    entries.extend([
+        ((r, -1), (0, 1)) for r in range(len(parsed))
+        ] + [
+            ((r, len(parsed[0])), (0, -1)) for r in range(len(parsed))
+            ]) ## add side entries
+    res = set()
+    trace(parsed, entries[20][0], entries[20][1])
+    for entry in entries:
+        visited.clear()
+        energized.clear()
+        beg, move = entry
+        trace(parsed, beg, move)
+        res.add(tuple(energized))
+
+    return max(len(r) for r in res)
+
+    # maximum = 0 # accidentally solved wrong idea of all permutations of two beam entries
+    # res = list(res)
+    # for outer in range(len(res)):
+    #     for inner in range(outer + 1, len(res)):
+    #         new = max(maximum, len(set(res[inner] + res[outer])))
+    #         if new != maximum:
+    #             print(inner, outer)
+    #
+    # return maximum
+        
+
+# print(a('0'))
+print(b('1'))
