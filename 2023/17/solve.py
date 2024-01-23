@@ -1,5 +1,7 @@
-from typing import List
+from typing import Deque, List
 
+@dataclass
+class 
 
 def parse(inp: str) -> List:
     """Function to parse input"""
@@ -7,7 +9,7 @@ def parse(inp: str) -> List:
 
 def loss(inp: List, initial: tuple, dest: tuple) -> int:
     """Function to determine least heat loss possible"""
+    visited = {}
+    q = Deque([(initial, 0)])
 
     
-
-
