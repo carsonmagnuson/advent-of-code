@@ -13,11 +13,20 @@ file:close()
 
 table.sort(list1)
 table.sort(list2)
-local s = 0 
+local s = 0
+local m = 0
+local frequencyMap = {}
+
+for _, item in ipairs(list2) do
+  frequencyMap[item] = (frequencyMap[item] or 0) + 1
+end
+
 
 for i,v in ipairs(list1) do
   s = s + math.abs(v - list2[i])
+  m = m + (v*(frequencyMap[v] or 0))
 end
 
-print(s)
 
+print(s)
+print(m)
